@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.PeriodicTrigger;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,8 @@ import java.time.Duration;
 public class DiscordService implements ApiService {
     @Autowired
     TaskScheduler taskScheduler;
-    private static String token = "MTA4Njc3MTkyOTU2MzgwNzg0NA.Ga8plp.3OwVP0x4KXUDLcMmOwLMwRjKH0_J-qo10hOjkM";
+    @Autowired
+    private Environment env;
 
     JDA javaDiscordAssist;
     private
@@ -31,7 +34,7 @@ public class DiscordService implements ApiService {
     public void check(){
         if(this.javaDiscordAssist == null || this.javaDiscordAssist.isUnavailable(10L)){
             try {
-                this.javaDiscordAssist = JDABuilder.createDefault(token).build().awaitReady();
+                this.javaDiscordAssist = JDABuilder.createDefault(env.getProperty("DISCORD_TOKEN")).build().awaitReady();
             } catch (InterruptedException e) {
                 log.error(e.getMessage(), e);
             }
